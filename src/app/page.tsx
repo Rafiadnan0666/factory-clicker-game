@@ -11,7 +11,9 @@ const Factory404 = () => {
     overclock: 0,
     bugExploiter: 0,
     systemPatch: 0,
-    quantumCore: 0
+    quantumCore: 0,
+    neuralNetwork: 0,
+    singularityDrive: 0
   })
   const [messages, setMessages] = useState<string[]>([
     "> [SYSTEM BOOT] Factory 404 initializing...",
@@ -28,6 +30,71 @@ const Factory404 = () => {
   const [factoryHealth, setFactoryHealth] = useState(100)
   const [scanLinePos, setScanLinePos] = useState(0)
   const [activeAnimation, setActiveAnimation] = useState(0)
+  const [showLore, setShowLore] = useState(true)
+  const [showVictory, setShowVictory] = useState(false)
+  const [galaxyRotation, setGalaxyRotation] = useState(0)
+  const [graphData, setGraphData] = useState<number[]>([])
+  const [particles, setParticles] = useState<Array<{x: number, y: number, vx: number, vy: number, life: number}>>([])
+
+  // Check if first visit
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('factory404_visited')
+    if (!hasVisited) {
+      setShowLore(true)
+      localStorage.setItem('factory404_visited', 'true')
+    } else {
+      setShowLore(false)
+    }
+  }, [])
+
+  // Check for victory condition
+  useEffect(() => {
+    if (corruptionLevel >= 3 && upgrades.singularityDrive > 0) {
+      setShowVictory(true)
+    }
+  }, [corruptionLevel, upgrades.singularityDrive])
+
+  // Galaxy animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGalaxyRotation(prev => (prev + 1) % 360)
+    }, 100)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Graph data updates
+  useEffect(() => {
+    if (clicks % 5 === 0) {
+      setGraphData(prev => [...prev.slice(-19), clicks].filter(Boolean))
+    }
+  }, [clicks])
+
+  // Particle effects
+  useEffect(() => {
+    if (isGlitching || corruptionLevel > 0) {
+      const newParticles = Array.from({length: 10 + (corruptionLevel * 5)}, () => ({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        vx: Math.random() * 2 - 1,
+        vy: Math.random() * 2 - 1,
+        life: 50 + Math.random() * 100
+      }))
+      setParticles(prev => [...prev, ...newParticles].slice(0, 100))
+    }
+
+    const updateParticles = setInterval(() => {
+      setParticles(prev => 
+        prev.map(p => ({
+          ...p,
+          x: p.x + p.vx,
+          y: p.y + p.vy,
+          life: p.life - 1
+        })).filter(p => p.life > 0)
+      )
+    }, 50)
+
+    return () => clearInterval(updateParticles)
+  }, [isGlitching, corruptionLevel])
 
   // ASCII items with more variety
   const itemTemplates = [
@@ -119,7 +186,7 @@ const Factory404 = () => {
         break
       case 'status':
         addMessage(`> [STATUS] Clicks: ${clicks} | Items: ${items.length} | Credits: ${credits}`)
-        addMessage(`> [UPGRADES] OC:${upgrades.overclock} BE:${upgrades.bugExploiter} SP:${upgrades.systemPatch}`)
+        addMessage(`> [UPGRADES] OC:${upgrades.overclock} BE:${upgrades.bugExploiter} SP:${upgrades.systemPatch} NN:${upgrades.neuralNetwork}`)
         addMessage(`> [AUTOMATION] ${autoClickers} units`)
         break
       case 'inventory':
@@ -133,6 +200,9 @@ const Factory404 = () => {
           addMessage("> [INVENTORY] Empty")
         }
         break
+      case 'graph':
+        addMessage("> [GRAPH] Showing production metrics")
+        break
       default:
         addMessage("> [ERROR] Unknown command. Type 'help' for options")
     }
@@ -140,13 +210,13 @@ const Factory404 = () => {
 
   // Handle click with more effects
   const handleClick = useCallback(() => {
-    const baseProduction = 1 + (upgrades.overclock * 2)
+    const baseProduction = 1 + (upgrades.overclock * 2) + (upgrades.neuralNetwork * 5)
     const newClicks = clicks + baseProduction
     setClicks(newClicks)
     
     // Generate items
     const newItems = [...items]
-    const itemsToAdd = 1 + (upgrades.bugExploiter * 2)
+    const itemsToAdd = 1 + (upgrades.bugExploiter * 2) + (upgrades.singularityDrive * 10)
     const isCorrupted = corruptionLevel > 0 && Math.random() > 0.7
     
     for (let i = 0; i < itemsToAdd; i++) {
@@ -156,7 +226,7 @@ const Factory404 = () => {
     setItems(newItems)
     
     // Add credits with diminishing returns at higher corruption
-    const creditMultiplier = 1 - (corruptionLevel * 0.1)
+    const creditMultiplier = 1 - (corruptionLevel * 0.1) + (upgrades.singularityDrive * 0.5)
     const newCredits = credits + Math.max(1, Math.floor((1 + Math.random() * 3) * creditMultiplier))
     setCredits(newCredits)
     
@@ -211,18 +281,19 @@ const Factory404 = () => {
   }, [clicks, items, upgrades, corruptionLevel, credits, addMessage, generateItem])
 
   // Auto-clicker effect with health check
-  useEffect(() => {
-    if (autoClickers > 0) {
-      const efficiency = factoryHealth / 100
-      const interval = setInterval(() => {
-        if (Math.random() < efficiency) { // Only work if factory is healthy
-          handleClick()
-        }
-      }, 1000 / (autoClickers * (1 + (upgrades.quantumCore * 0.5))))
-      
-      return () => clearInterval(interval)
-    }
-  }, [autoClickers, handleClick, factoryHealth, upgrades.quantumCore])
+useEffect(() => {
+  if (autoClickers > 0) {
+    const efficiency = factoryHealth / 100;
+    const interval = setInterval(() => {
+      if (Math.random() < efficiency) {
+        handleClick(); // Only work if factory is healthy
+      }
+    }, 1000 / (autoClickers * (1 + (upgrades.quantumCore * 0.5) + (upgrades.neuralNetwork * 2)))); // ← This was missing a closing parenthesis
+
+    return () => clearInterval(interval);
+  }
+}, [autoClickers, handleClick, factoryHealth, upgrades.quantumCore, upgrades.neuralNetwork]);
+
 
   // Repair factory over time
   useEffect(() => {
@@ -278,6 +349,14 @@ const Factory404 = () => {
           setUpgrades({...upgrades, quantumCore: upgrades.quantumCore + 1})
           addMessage(`> [UPGRADE] Quantum core synchronized`)
           break
+        case 'neuralNetwork':
+          setUpgrades({...upgrades, neuralNetwork: upgrades.neuralNetwork + 1})
+          addMessage(`> [UPGRADE] Neural network layer added`)
+          break
+        case 'singularityDrive':
+          setUpgrades({...upgrades, singularityDrive: upgrades.singularityDrive + 1})
+          addMessage(`> [UPGRADE] Singularity drive engaged`)
+          break
       }
     } else {
       addMessage("> [ERROR] Insufficient credits")
@@ -296,6 +375,10 @@ const Factory404 = () => {
         return 30 + (upgrades.systemPatch * 20)
       case 'quantumCore':
         return 50 + (upgrades.quantumCore * 30)
+      case 'neuralNetwork':
+        return 75 + (upgrades.neuralNetwork * 50)
+      case 'singularityDrive':
+        return 100 + (upgrades.singularityDrive * 75)
       default:
         return 0
     }
@@ -328,7 +411,7 @@ const Factory404 = () => {
       ["   _____________________", "  /||||||||||||||||||||/|", " /                    / |", "/____________________/  |", "|                    |  |", "|     FACTORY 404    |  |", "|                    |  |", "|____________________| /", "                     |/"]
     ]
 
-    let baseArt = [...animations[activeAnimation]]
+    const baseArt = [...animations[activeAnimation]]
     
     if (corruptionLevel > 0) {
       baseArt[5] = "|  !FACTORY 404!   |  |"
@@ -340,6 +423,62 @@ const Factory404 = () => {
     return baseArt
   }
 
+  // Generate animated galaxy ASCII
+  const getGalaxyArt = () => {
+    const frames = [
+      `
+        . * . . * .
+      .   .  *  .   .
+    *  .   . . .   .  *
+      .   *  . .  *   .
+        . . * . * . .
+      `,
+      `
+        . . * * . .
+      .  *  . .  *  .
+    . .   . * * .   . .
+      .  *  . .  *  .
+        . . * * . .
+      `,
+      `
+        * . . . . *
+      .   *  .  *   .
+    . .   *  *   . . .
+      .   *  .  *   .
+        * . . . . *
+      `
+    ]
+    
+    return frames[Math.floor(galaxyRotation / 30) % frames.length]
+  }
+
+  // Generate exponential graph ASCII
+  const getGraphArt = () => {
+    if (graphData.length < 2) return "> [GRAPH] Collecting data..."
+    
+    const maxValue = Math.max(...graphData) || 1
+    const height = 8
+    const width = 20
+    
+    const graphLines = []
+    
+    for (let y = height; y >= 0; y--) {
+      let line = "|"
+      const threshold = (y / height) * maxValue
+      
+      for (let x = 0; x < Math.min(width, graphData.length); x++) {
+        const value = graphData[graphData.length - 1 - x] || 0
+        line += value >= threshold ? "█" : " "
+      }
+      
+      graphLines.push(line)
+    }
+    
+    graphLines.push("+" + "-".repeat(Math.min(width, graphData.length)) + ">")
+    
+    return graphLines.join('\n')
+  }
+
   // Scan line effect component
   const ScanLine = () => (
     <div 
@@ -348,10 +487,31 @@ const Factory404 = () => {
     />
   )
 
+  // Particle effect component
+  const ParticleEffects = () => (
+    <div className="absolute inset-0 pointer-events-none">
+      {particles.map((p, i) => (
+        <div 
+          key={i}
+          className="absolute w-1 h-1 bg-green-400 rounded-full"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            opacity: p.life / 100,
+            transform: `scale(${p.life / 50})`
+          }}
+        />
+      ))}
+    </div>
+  )
+
   return (
     <div className={`min-h-screen bg-black text-green-400 font-mono p-2 md:p-4 overflow-hidden relative ${isGlitching ? 'glitch-effect' : ''}`}>
       {/* Scan line effect */}
       <ScanLine />
+      
+      {/* Particle effects */}
+      <ParticleEffects />
       
       {/* CRT screen effect */}
       <div className="crt-overlay"></div>
@@ -430,7 +590,7 @@ const Factory404 = () => {
                 <div className="absolute inset-0 bg-green-400 opacity-10 hover:opacity-20 transition"></div>
                 <span className="text-xs mr-2">[RUN]</span> 
                 ASSEMBLE ITEM
-                <span className="text-xs ml-2">{1 + (upgrades.overclock * 2)}x</span>
+                <span className="text-xs ml-2">{1 + (upgrades.overclock * 2) + (upgrades.neuralNetwork * 5)}x</span>
               </button>
               
               {/* Upgrades */}
@@ -499,6 +659,34 @@ const Factory404 = () => {
                       )}
                     </button>
                   )}
+                  
+                  {corruptionLevel > 1 && (
+                    <button 
+                      onClick={() => buyUpgrade('neuralNetwork')}
+                      className={`w-full border ${credits >= getUpgradeCost('neuralNetwork') ? 'border-blue-400 hover:bg-blue-400' : 'border-gray-600'} p-1 hover:text-black flex justify-between relative`}
+                      disabled={credits < getUpgradeCost('neuralNetwork')}
+                    >
+                      <span>NEURAL NETWORK</span>
+                      <span>{'▮'.repeat(75 + (upgrades.neuralNetwork * 50))}</span>
+                      {credits >= getUpgradeCost('neuralNetwork') && (
+                        <span className="absolute left-0 top-0 h-full bg-blue-400 opacity-10 hover:opacity-20"></span>
+                      )}
+                    </button>
+                  )}
+                  
+                  {corruptionLevel > 2 && (
+                    <button 
+                      onClick={() => buyUpgrade('singularityDrive')}
+                      className={`w-full border ${credits >= getUpgradeCost('singularityDrive') ? 'border-red-400 hover:bg-red-400' : 'border-gray-600'} p-1 hover:text-black flex justify-between relative`}
+                      disabled={credits < getUpgradeCost('singularityDrive')}
+                    >
+                      <span>SINGULARITY DRIVE</span>
+                      <span>{'▮'.repeat(100 + (upgrades.singularityDrive * 75))}</span>
+                      {credits >= getUpgradeCost('singularityDrive') && (
+                        <span className="absolute left-0 top-0 h-full bg-red-400 opacity-10 hover:opacity-20"></span>
+                      )}
+                    </button>
+                  )}
                 </div>
                 
                 {clicks >= 100 && corruptionLevel < 3 && (
@@ -537,6 +725,16 @@ const Factory404 = () => {
           </div>
         </div>
         
+        {/* Production graph */}
+        {graphData.length > 1 && (
+          <div className="mt-4 border border-green-800 p-2">
+            <h3 className="text-sm mb-2">[ PRODUCTION METRICS ]</h3>
+            <pre className="text-xs">
+              {getGraphArt()}
+            </pre>
+          </div>
+        )}
+        
         {/* Footer with credits */}
         <div className="mt-4 text-xs text-center text-green-600">
           <p>CREATED BY RAFI ADNAN</p>
@@ -566,7 +764,7 @@ const Factory404 = () => {
               
               <div className="text-sm space-y-2">
                 <p><strong>CLICK BUTTON:</strong> Assemble items and earn credits</p>
-                <p><strong>UPGRADES:</strong> Improve your factory's capabilities</p>
+                <p><strong>UPGRADES:</strong> Improve your factorys capabilities</p>
                 <p><strong>TERMINAL COMMANDS:</strong></p>
                 <ul className="list-disc pl-5 space-y-1">
                   <li><strong>help</strong> - Show this help</li>
@@ -574,12 +772,103 @@ const Factory404 = () => {
                   <li><strong>inventory</strong> - Show recent items</li>
                   <li><strong>clear</strong> - Clear terminal</li>
                   <li><strong>reboot</strong> - Enable corruption mode (after 100 clicks)</li>
+                  <li><strong>graph</strong> - Show production metrics</li>
                 </ul>
                 <p className="mt-2 text-yellow-400">WARNING: Corruption mode increases rewards but adds instability!</p>
               </div>
               
               {/* Modal scan line */}
               <div className="absolute left-0 right-0 h-px bg-green-400 opacity-20 animate-scan"></div>
+            </div>
+          </div>
+        )}
+        
+        {/* Lore modal */}
+        {showLore && (
+          <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-20">
+            <div className="bg-black border-2 border-green-400 p-4 max-w-2xl relative">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg">[ FACTORY 404 - SYSTEM BOOT ]</h3>
+                <button 
+                  onClick={() => setShowLore(false)}
+                  className="border border-green-400 px-2 hover:bg-green-400 hover:text-black"
+                >
+                  CONTINUE
+                </button>
+              </div>
+              
+              <div className="text-sm space-y-4">
+                <p>YEAR 2042 - QUANTUM COMPUTING ERA</p>
+                <p>You have been assigned to manage FACTORY 404, an experimental quantum manufacturing facility.</p>
+                <p>Your mission: Produce components for the first artificial superintelligence.</p>
+                <p>But beware - the quantum cores are unstable. Pushing them too hard may unlock incredible power...</p>
+                <p>...or tear reality apart.</p>
+                <p className="text-yellow-400">[INSTRUCTIONS]</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Click the ASSEMBLE button to produce components</li>
+                  <li>Earn credits to purchase upgrades</li>
+                  <li>Type commands in the terminal for advanced control</li>
+                  <li>Reboot when ready to unlock quantum corruption modes</li>
+                </ul>
+              </div>
+              
+              <div className="mt-4 text-xs text-green-600">
+                <p>CREATED BY RAFI ADNAN</p>
+                <p>https://rafiadnan.my.id/</p>
+              </div>
+              
+              {/* Modal scan line */}
+              <div className="absolute left-0 right-0 h-px bg-green-400 opacity-20 animate-scan"></div>
+            </div>
+          </div>
+        )}
+        
+        {/* Victory modal */}
+        {showVictory && (
+          <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-20">
+            <div className="bg-black border-2 border-purple-400 p-4 max-w-2xl relative text-center">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg">[ QUANTUM SINGULARITY ACHIEVED ]</h3>
+                <button 
+                  onClick={() => setShowVictory(false)}
+                  className="border border-purple-400 px-2 hover:bg-purple-400 hover:text-black"
+                >
+                  CONTINUE
+                </button>
+              </div>
+              
+              <div className="text-sm space-y-4">
+                <pre className="text-purple-400 text-xs whitespace-pre">
+                  {getGalaxyArt()}
+                </pre>
+                
+                <p>CONGRATULATIONS ENGINEER</p>
+                <p>Youve pushed FACTORY 404 beyond its design limits.</p>
+                <p>The quantum singularity drive is now self-sustaining.</p>
+                <p>Your work here is complete.</p>
+                <p className="text-purple-400">THANK YOU FOR PLAYING</p>
+                
+                <div className="mt-4 text-xs text-purple-600">
+                  <p>CREATED BY RAFI ADNAN</p>
+                  <a 
+                    href="https://rafiadnan.my.id/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:text-purple-400 underline"
+                  >
+                    https://rafiadnan.my.id/
+                  </a>
+                  <p className="mt-2">Check out my other projects:</p>
+                  <div className="flex justify-center gap-2 mt-1">
+                    <a href="#" className="hover:text-purple-400">GitHub</a>
+                    <a href="#" className="hover:text-purple-400">Portfolio</a>
+                    <a href="#" className="hover:text-purple-400">Blog</a>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Modal scan line */}
+              <div className="absolute left-0 right-0 h-px bg-purple-400 opacity-20 animate-scan"></div>
             </div>
           </div>
         )}
@@ -672,6 +961,16 @@ const Factory404 = () => {
             rgba(255,0,0,0.1) 10px,
             rgba(255,0,0,0.1) 20px
           );
+        }
+        
+        /* Galaxy animation */
+        @keyframes galaxy-rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        .galaxy {
+          animation: galaxy-rotate 20s linear infinite;
         }
       `}</style>
     </div>
