@@ -56,20 +56,3 @@ Kemudian kamu bakal dilempar ke mode interaktif—tekan tombol “ASSEMBLE” at
 Kamu ditugasi mengelola **FACTORY 404**, fasilitas manufaktur quantum eksperimental. Tujuan awal: produksi komponen untuk kecerdasan buatan buatan. Tapi hati-hati—**quantum cores tidak stabil**. Jika kamu terlalu memburu power, kamu bisa mendapatkan kekuatan luar biasa… atau malah merobek realitas itu sendiri.
 
 ---
-
-##  Credits
-
-**Dibuat oleh:** Rafi Adnan  
-**Portfolio:** [rafiadnan.my.id](https://rafiadnan.my.id)  
-(Yah, kalau kamu mau pamer, link-nya ada.)
-
----
-
-##  Kenapa README Ini Penting?
-
--  **Jelas**: Langsung nyambung ke tampilan terminal kamu tanpa embel-embel manis.
--  **Langsung ke inti**: Gameplay, konteks, instruksi—dijabarkan tanpa basa-basi.
--  **Makin atmosferik**: Ini bukan cuma docs, tapi juga teaser fiksi futuristik—yang pas banget untuk vibe kamu.
-
-Kalau kamu mau tambahin video demo, GIF layar terminal, atau banner ASCII yang lebih canggih—cukup bilang. I'll go full “README hidup” kalau kamu minta.
-::contentReference[oaicite:0]{index=0}
