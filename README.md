@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ​ Factory 404 Terminal v1.0.0
 
-## Getting Started
+> Sistem quantum manufaktur futuristik — selamat datang di tahun 2042 dan bersiaplah menerabas realitas.
 
-First, run the development server:
+/ /|
+/ / |
+// |
+| | |
+| FACTORY 404 | |
+| | |
+|| /
+|/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| STATISTICS       | VALUES |
+|------------------|----------------------------|
+| **CLICKS**        | 0 (klik tombol adalah mata uang utama) |
+| **CREDITS**       | 0 (modal untuk beli upgrade) |
+| **ITEMS**         | 0 (tunggu kamu bikin)           |
+| **HEALTH**        | [██████████] (keselamatanmu—masih utuh) |
+| **CORRUPTION**    | 0/3 (jaga-jaga jangan kebablasan) |
+| **AUTOMATION**    | 0 (otomasi? belum hidup)    |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+##  Sistem Boot Narrative
 
-## Learn More
+**[SYSTEM BOOT]** Factory 404 sedang menyala...  
+**[MEMTEST]** 640 K RAM OK  
+**[DISK]** Floppy drive seek... done  
+**[VIDEO]** CGA mode activated  
+**[STATUS]** Awaiting user input...  
+**[PROMPT]** `_`
 
-To learn more about Next.js, take a look at the following resources:
+Kemudian kamu bakal dilempar ke mode interaktif—tekan tombol “ASSEMBLE” atau ketik perintah di terminal untuk mulai menjalankan sistem.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+##  Gameplay & Instruksi (Apa yang mesti kamu tahu — jangan pura-pura gak ngerti)
 
-## Deploy on Vercel
+- **Click “ASSEMBLE”** → mulai produksi komponen.
+- **Kumpulkan credits** → untuk beli upgrade seperti:
+  - **ASSEMBLY DRONE**
+  - **OVERCLOCK CPU**
+  - **BUG EXPLOITER**
+  - **SYSTEM PATCH**
+- **Ketik perintah di terminal** → untuk kontrol tingkat lanjut (kalau kamu cukup berani).
+- **Reboot sistem** → aktifkan mode korupsi quantum (permainan ini serius—bahaya dan godaan).
+- **Tujuan**: Manfaatkan sistem manufaktur quantum tanpa bikin realitas runtuh. Disiplin itu penting, tapi eksperimen juga menggoda.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+##  Latar Cerita
+
+**YEAR 2042 – QUANTUM COMPUTING ERA**  
+Kamu ditugasi mengelola **FACTORY 404**, fasilitas manufaktur quantum eksperimental. Tujuan awal: produksi komponen untuk kecerdasan buatan buatan. Tapi hati-hati—**quantum cores tidak stabil**. Jika kamu terlalu memburu power, kamu bisa mendapatkan kekuatan luar biasa… atau malah merobek realitas itu sendiri.
+
+---
+
+##  Credits
+
+**Dibuat oleh:** Rafi Adnan  
+**Portfolio:** [rafiadnan.my.id](https://rafiadnan.my.id)  
+(Yah, kalau kamu mau pamer, link-nya ada.)
+
+---
+
+##  Kenapa README Ini Penting?
+
+-  **Jelas**: Langsung nyambung ke tampilan terminal kamu tanpa embel-embel manis.
+-  **Langsung ke inti**: Gameplay, konteks, instruksi—dijabarkan tanpa basa-basi.
+-  **Makin atmosferik**: Ini bukan cuma docs, tapi juga teaser fiksi futuristik—yang pas banget untuk vibe kamu.
+
+Kalau kamu mau tambahin video demo, GIF layar terminal, atau banner ASCII yang lebih canggih—cukup bilang. I'll go full “README hidup” kalau kamu minta.
+::contentReference[oaicite:0]{index=0}
