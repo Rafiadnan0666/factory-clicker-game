@@ -36,7 +36,7 @@ Kemudian kamu bakal dilempar ke mode interaktif—tekan tombol “ASSEMBLE” at
 
 ---
 
-##  Gameplay & Instruksi (Apa yang mesti kamu tahu — jangan pura-pura gak ngerti)
+##  Gameplay & Instruksi 
 
 - **Click “ASSEMBLE”** → mulai produksi komponen.
 - **Kumpulkan credits** → untuk beli upgrade seperti:
